@@ -1,53 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+    <head>
+        {{.Head}}
+        <title>Edit {{.Data.Filename}} - mdwiki</title>
+    </head>
 
-<head>
-    {{.Head}}
-    <title>Edit {{.Data.Filename}} - mdwiki</title>
-</head>
-
-<body class="markdown-body">
-{{.Menu}}
-<div class="wrap container">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>Edit {{.Data.Filename}}</h1>
-            <form id="edit-form">
-                <div id="validation" class="hidden warning-box"></div>
-                <div class="editor-wrap">
-                    <pre id="editor" class="editor">{{.Data.RawContent}}</pre>
-                </div>
-                <input id="filename" type="text" name="filename" value="{{.Data.Filename}}"/><br/>
-                <br/>
-                <button id="save" type="submit">Save</button>
-                <a href="/{{.Data.Filename}}">Cancel</a>
-            </form>
-            <script type="module">
-                ui.dom.onLoad(function () {
-                    const editor = ui.editor('#editor')
-                    editor.focus()
-
-                    ui.dom.onClick("#save", function (e) {
-                        e.preventDefault();
-                        ui.api.post("/api/page.update/{{.Data.Filename}}", {
-                            filename: ui.dom.el("#filename").value,
-                            content: editor.getText()
-                        })
-                            .then(data => {
-                                ui.dom.hide("#validation")
-                                ui.browser.redirect(data.redirect)
-                            })
-                            .catch(error => {
-                                ui.dom.content("#validation", `⚠️${error}`)
-                                ui.dom.show("#validation")
+    <body class="markdown-body">
+        {{.Menu}}
+        <div class="wrap container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1>Edit {{.Data.Filename}}</h1>
+                    <form id="edit-form">
+                        <div id="validation" class="hidden warning-box"></div>
+                        <div class="editor-wrap">
+                            <pre id="editor" class="editor"></pre>
+                        </div>
+                        <input
+                            id="filename"
+                            type="text"
+                            name="filename"
+                            value="{{.Data.Filename}}"
+                        /><br />
+                        <br />
+                        <button id="save" type="submit">Save</button>
+                        <a href="/{{.Data.Filename}}">Cancel</a>
+                    </form>
+                    <script type="module">
+                        ui.dom.onLoad(function () {
+                            OverType.setTheme("solar");
+                            const [editor] = new OverType("#editor", {
+                                value: `{{.Data.RawContent}}`,
                             });
-                    })
-                });
-            </script>
-            {{.Footer}}
-        </div>
-    </div>
-</div>
-</body>
+                            editor.focus();
 
+                            ui.dom.onClick("#save", function (e) {
+                                e.preventDefault();
+                                ui.api
+                                    .post(
+                                        "/api/page.update/{{.Data.Filename}}",
+                                        {
+                                            filename:
+                                                ui.dom.el("#filename").value,
+                                            content: editor.getValue(),
+                                        },
+                                    )
+                                    .then((data) => {
+                                        ui.dom.hide("#validation");
+                                        ui.browser.redirect(data.redirect);
+                                    })
+                                    .catch((error) => {
+                                        ui.dom.content(
+                                            "#validation",
+                                            `⚠️${error}`,
+                                        );
+                                        ui.dom.show("#validation");
+                                    });
+                            });
+                        });
+                    </script>
+                    {{.Footer}}
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
