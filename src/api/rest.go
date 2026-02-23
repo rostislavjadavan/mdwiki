@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/rostislavjadavan/mdwiki/src/config"
 	"github.com/rostislavjadavan/mdwiki/src/search"
 	"github.com/rostislavjadavan/mdwiki/src/storage"
 )
@@ -215,6 +216,12 @@ func RestVersionGetHandler(e *echo.Echo, s *storage.Storage) func(c echo.Context
 			return c.JSON(http.StatusNotFound, ErrorResponse{Message: err.Error()})
 		}
 		return c.JSON(http.StatusOK, toRestPage(page))
+	}
+}
+
+func RestSettingsHandler(cfg *config.AppConfig) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		return c.JSON(http.StatusOK, map[string]string{"theme": cfg.Theme})
 	}
 }
 

@@ -30,7 +30,7 @@ export function VersionView() {
 
   if (error) return (
     <Layout>
-      <div className="border border-red-300 bg-red-50 rounded-lg p-6 text-red-700">
+      <div className="rounded-lg p-6" style={{ border: '1px solid var(--gh-error-border)', background: 'var(--gh-error-bg)', color: 'var(--gh-error-text)' }}>
         <p>{error}</p>
         <Link to={`/${filename}/version`} className="text-gh-link mt-2 inline-block">Back to history</Link>
       </div>
@@ -42,11 +42,11 @@ export function VersionView() {
   return (
     <Layout>
       <div className="border border-gh-border rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 bg-[#f6f8fa] border-b border-gh-border">
+        <div className="flex items-center justify-between px-4 py-3 bg-gh-subtle border-b border-gh-border">
           <div className="flex items-center gap-3">
             <Link to={`/${filename}/version`} className="text-gh-muted hover:text-gh-link text-sm">← History</Link>
             <h1 className="font-semibold text-sm">{data.filename}</h1>
-            <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded px-2 py-0.5">version</span>
+            <span className="text-xs rounded px-2 py-0.5" style={{ background: 'var(--gh-badge-blue-bg)', color: 'var(--gh-badge-blue-text)', border: '1px solid var(--gh-badge-blue-border)' }}>version</span>
           </div>
           <button
             onClick={handleRestore}

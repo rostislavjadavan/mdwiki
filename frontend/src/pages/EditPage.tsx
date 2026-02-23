@@ -42,12 +42,12 @@ export function EditPage() {
   return (
     <Layout>
       <div className="border border-gh-border rounded-lg overflow-hidden">
-        <div className="px-4 py-3 bg-[#f6f8fa] border-b border-gh-border">
+        <div className="px-4 py-3 bg-gh-subtle border-b border-gh-border">
           <h1 className="font-semibold">Edit page</h1>
         </div>
         <form onSubmit={handleSave} className="p-6 space-y-4">
           {error && (
-            <div className="border border-red-300 bg-red-50 rounded p-3 text-red-700 text-sm">{error}</div>
+            <div className="border rounded p-3 text-sm" style={{ borderColor: 'var(--gh-error-border)', background: 'var(--gh-error-bg)', color: 'var(--gh-error-text)' }}>{error}</div>
           )}
           <div>
             <label className="block text-sm font-medium text-gh-text mb-1">Filename</label>
@@ -55,7 +55,7 @@ export function EditPage() {
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="w-full border border-gh-border rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+              className="w-full border border-gh-border rounded px-3 py-2 text-sm bg-gh-bg text-gh-text focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
               required
             />
           </div>
@@ -65,7 +65,7 @@ export function EditPage() {
               value={content}
               onChange={e => setContent(e.target.value)}
               rows={20}
-              className="w-full border border-gh-border rounded px-3 py-2 text-sm font-mono focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 resize-y"
+              className="w-full border border-gh-border rounded px-3 py-2 text-sm font-mono bg-gh-bg text-gh-text focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 resize-y"
             />
           </div>
           <div className="flex gap-3">
@@ -79,7 +79,7 @@ export function EditPage() {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-4 py-2 text-sm font-medium text-gh-text bg-white rounded border border-gh-border hover:bg-[#f6f8fa]"
+              className="px-4 py-2 text-sm font-medium text-gh-text bg-gh-bg rounded border border-gh-border hover:bg-gh-subtle"
             >
               Cancel
             </button>

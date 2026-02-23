@@ -37,6 +37,7 @@ func main() {
 	e.GET("/api/pages/:page/versions", api.RestVersionsListHandler(e, s))
 	e.GET("/api/versions/:ver", api.RestVersionGetHandler(e, s))
 	e.POST("/api/versions/:ver/restore", api.RestVersionRestoreHandler(e, s))
+	e.GET("/api/settings", api.RestSettingsHandler(cfg))
 
 	// SPA static assets and catch-all
 	e.GET("/static/app/*", handlers.SPAStaticHandler(e))

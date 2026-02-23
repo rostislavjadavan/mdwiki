@@ -29,7 +29,7 @@ export function TrashPageView() {
 
   if (error) return (
     <Layout>
-      <div className="border border-red-300 bg-red-50 rounded-lg p-6 text-red-700">
+      <div className="rounded-lg p-6" style={{ border: '1px solid var(--gh-error-border)', background: 'var(--gh-error-bg)', color: 'var(--gh-error-text)' }}>
         <p>{error}</p>
         <Link to="/trash" className="text-gh-link mt-2 inline-block">Back to trash</Link>
       </div>
@@ -41,11 +41,11 @@ export function TrashPageView() {
   return (
     <Layout>
       <div className="border border-gh-border rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 bg-[#f6f8fa] border-b border-gh-border">
+        <div className="flex items-center justify-between px-4 py-3 bg-gh-subtle border-b border-gh-border">
           <div className="flex items-center gap-3">
             <Link to="/trash" className="text-gh-muted hover:text-gh-link text-sm">← Trash</Link>
             <h1 className="font-semibold">{data.filename}</h1>
-            <span className="text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded px-2 py-0.5">deleted</span>
+            <span className="text-xs rounded px-2 py-0.5" style={{ background: 'var(--gh-badge-yellow-bg)', color: 'var(--gh-badge-yellow-text)', border: '1px solid var(--gh-badge-yellow-border)' }}>deleted</span>
           </div>
           <button
             onClick={handleRestore}

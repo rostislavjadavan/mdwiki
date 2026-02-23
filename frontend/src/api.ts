@@ -63,4 +63,5 @@ export const api = {
   getVersion: (ver: string) => request<Page>(`/api/versions/${ver}`),
   restoreVersion: (ver: string) =>
     request<void>(`/api/versions/${ver}/restore`, { method: 'POST' }),
+  getSettings: () => request<{ theme: string }>('/api/settings'),
 }

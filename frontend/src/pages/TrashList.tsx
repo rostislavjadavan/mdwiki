@@ -43,7 +43,7 @@ export function TrashList() {
   return (
     <Layout>
       <div className="border border-gh-border rounded-lg overflow-hidden">
-        <div className="px-4 py-3 bg-[#f6f8fa] border-b border-gh-border flex items-center justify-between">
+        <div className="px-4 py-3 bg-gh-subtle border-b border-gh-border flex items-center justify-between">
           <h1 className="font-semibold">Trash</h1>
           {pages.length > 0 && (
             <button
@@ -55,7 +55,7 @@ export function TrashList() {
           )}
         </div>
         {loading && <p className="p-4 text-gh-muted text-sm">Loading...</p>}
-        {error && <p className="p-4 text-red-600 text-sm">{error}</p>}
+        {error && <p className="p-4 text-sm" style={{ color: 'var(--gh-error-text)' }}>{error}</p>}
         {!loading && !error && pages.length === 0 && (
           <p className="p-4 text-gh-muted text-sm">Trash is empty.</p>
         )}
