@@ -27,23 +27,6 @@ func SPAStaticHandler(e *echo.Echo) func(c echo.Context) error {
 	}
 }
 
-func SPAFaviconHandler(e *echo.Echo) func(c echo.Context) error {
-	return func(c echo.Context) error {
-		content, err := fs.ReadFile(spaFS, "favicon.ico")
-		if err != nil {
-			// Fall back to vite.svg or return 404
-			content, err = fs.ReadFile(spaFS, "vite.svg")
-			if err != nil {
-				return echo.ErrNotFound
-			}
-			c.Response().Header().Set("Content-Type", MimeSvg)
-			return c.Blob(http.StatusOK, MimeSvg, content)
-		}
-		c.Response().Header().Set("Content-Type", MimeIco)
-		return c.Blob(http.StatusOK, MimeIco, content)
-	}
-}
-
 func SPAHandler(e *echo.Echo) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		content, err := fs.ReadFile(spaFS, "index.html")

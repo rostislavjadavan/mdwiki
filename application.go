@@ -23,17 +23,6 @@ func main() {
 	e := echo.New()
 	e.Logger.SetLevel(log.DEBUG)
 
-	// Static files (legacy)
-	e.GET("/static/favicon.png", handlers.SPAFaviconHandler(e))
-
-	// RPC like API (legacy)
-	e.POST("/api/page.create", api.PageCreateHandler(e, s))
-	e.POST("/api/page.update/:page", api.PageUpdateHandler(e, s))
-	e.POST("/api/page.delete", api.PageDeleteHandler(e, s))
-	e.POST("/api/trash.empty", api.TrashEmptyHandler(e, s))
-	e.POST("/api/trash.restore", api.TrashRestoreHandler(e, s))
-	e.POST("/api/version.restore", api.VersionRestoreHandler(e, s))
-
 	// REST API
 	e.GET("/api/pages", api.RestPageListHandler(e, s))
 	e.GET("/api/pages/:page", api.RestPageGetHandler(e, s))
