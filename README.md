@@ -101,6 +101,3 @@ WantedBy=multi-user.target
 - Status: `systemctl status mdwiki`
 - Enable on boot: `systemctl enable mdwiki`
 
-## Logo
-
-Made using https://excalidraw.com
