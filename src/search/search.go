@@ -13,16 +13,16 @@ import (
 )
 
 type Result struct {
-	Query       string
-	Filenames   []searchResult
-	PageContent []searchResult
+	Query       string         `json:"query"`
+	Filenames   []searchResult `json:"filenames"`
+	PageContent []searchResult `json:"pageContent"`
 }
 
 type searchResult struct {
-	Filename string
-	ModTime  time.Time
-	Score    int
-	Preview  string
+	Filename string    `json:"filename"`
+	ModTime  time.Time `json:"modTime"`
+	Score    int       `json:"score"`
+	Preview  string    `json:"preview"`
 }
 
 func Search(query string, s *storage.Storage) (*Result, error) {
