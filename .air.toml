@@ -1,0 +1,17 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  bin = "./tmp/mdwiki"
+  cmd = "mkdir -p frontend/dist && go build -o ./tmp/mdwiki ."
+  delay = 1000
+  exclude_dir = ["tmp", "frontend", ".storage", ".storage.OLD", "logo", "screenshots"]
+  exclude_regex = ["_test.go"]
+  include_ext = ["go", "yml"]
+  kill_delay = 500
+
+[log]
+  time = false
+
+[misc]
+  clean_on_exit = true

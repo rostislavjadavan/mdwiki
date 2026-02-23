@@ -3,3 +3,5 @@
 .code
 .personal
 frontend/node_modules/
+tmp/
+mdwiki
