@@ -29,7 +29,7 @@ export function SearchPage() {
     <Layout>
       <div className="space-y-6">
         <div className="border border-gh-border rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-[#f6f8fa] border-b border-gh-border">
+          <div className="px-4 py-3 bg-gh-subtle border-b border-gh-border">
             <h1 className="font-semibold">Search</h1>
           </div>
           <form onSubmit={handleSubmit} className="p-4 flex gap-3">
@@ -38,7 +38,7 @@ export function SearchPage() {
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Search pages..."
-              className="flex-1 border border-gh-border rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+              className="flex-1 border border-gh-border rounded px-3 py-2 text-sm bg-gh-bg text-gh-text focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
             />
             <button
               type="submit"
@@ -55,7 +55,7 @@ export function SearchPage() {
           <>
             {result.filenames.length > 0 && (
               <div className="border border-gh-border rounded-lg overflow-hidden">
-                <div className="px-4 py-3 bg-[#f6f8fa] border-b border-gh-border">
+                <div className="px-4 py-3 bg-gh-subtle border-b border-gh-border">
                   <h2 className="font-semibold text-sm">Filename matches</h2>
                 </div>
                 <ul>
@@ -75,7 +75,7 @@ export function SearchPage() {
 
             {result.pageContent.length > 0 && (
               <div className="border border-gh-border rounded-lg overflow-hidden">
-                <div className="px-4 py-3 bg-[#f6f8fa] border-b border-gh-border">
+                <div className="px-4 py-3 bg-gh-subtle border-b border-gh-border">
                   <h2 className="font-semibold text-sm">Content matches</h2>
                 </div>
                 <ul>

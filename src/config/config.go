@@ -6,6 +6,7 @@ type AppConfig struct {
 	Port    string `yaml:"port" env:"PORT" env-default:"8080"`
 	Host    string `yaml:"host" env:"HOST" env-default:"localhost"`
 	Storage string `yaml:"storage" env:"STORAGE" env-default:".storage"`
+	Theme   string `yaml:"theme" env:"THEME" env-default:"system"`
 }
 
 func LoadConfig(path string) (*AppConfig, error) {

@@ -1,17 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        'gh-bg': '#ffffff',
-        'gh-border': '#d0d7de',
-        'gh-header': '#24292f',
-        'gh-link': '#0969da',
-        'gh-btn-primary': '#2da44e',
-        'gh-btn-danger': '#cf222e',
-        'gh-text': '#1f2328',
-        'gh-muted': '#656d76',
+        'gh-bg': 'var(--gh-bg)',
+        'gh-border': 'var(--gh-border)',
+        'gh-header': 'var(--gh-header)',
+        'gh-link': 'var(--gh-link)',
+        'gh-btn-primary': 'var(--gh-btn-primary)',
+        'gh-btn-danger': 'var(--gh-btn-danger)',
+        'gh-text': 'var(--gh-text)',
+        'gh-muted': 'var(--gh-muted)',
+        'gh-subtle': 'var(--gh-subtle)',
       },
     },
   },

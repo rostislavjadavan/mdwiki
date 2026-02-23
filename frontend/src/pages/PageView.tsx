@@ -30,7 +30,7 @@ export function PageView() {
 
   if (error) return (
     <Layout>
-      <div className="border border-red-300 bg-red-50 rounded-lg p-6 text-red-700">
+      <div className="rounded-lg p-6" style={{ borderColor: 'var(--gh-error-border)', background: 'var(--gh-error-bg)', color: 'var(--gh-error-text)', border: '1px solid var(--gh-error-border)' }}>
         <h1 className="text-lg font-semibold mb-2">Page not found</h1>
         <p>{error}</p>
         <Link to="/create" className="text-gh-link mt-4 inline-block">Create a new page</Link>
@@ -43,7 +43,7 @@ export function PageView() {
   return (
     <Layout>
       <div className="border border-gh-border rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 bg-[#f6f8fa] border-b border-gh-border">
+        <div className="flex items-center justify-between px-4 py-3 bg-gh-subtle border-b border-gh-border">
           <h1 className="font-semibold text-gh-text">{data.filename}</h1>
           <div className="flex items-center gap-2">
             <Link

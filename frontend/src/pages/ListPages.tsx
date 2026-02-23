@@ -18,14 +18,14 @@ export function ListPages() {
   return (
     <Layout>
       <div className="border border-gh-border rounded-lg overflow-hidden">
-        <div className="px-4 py-3 bg-[#f6f8fa] border-b border-gh-border flex items-center justify-between">
+        <div className="px-4 py-3 bg-gh-subtle border-b border-gh-border flex items-center justify-between">
           <h1 className="font-semibold">All pages</h1>
           <Link to="/create" className="text-xs text-white bg-gh-btn-primary rounded px-3 py-1 font-medium hover:opacity-90">
             New page
           </Link>
         </div>
         {loading && <p className="p-4 text-gh-muted text-sm">Loading...</p>}
-        {error && <p className="p-4 text-red-600 text-sm">{error}</p>}
+        {error && <p className="p-4 text-sm" style={{ color: 'var(--gh-error-text)' }}>{error}</p>}
         {!loading && !error && pages.length === 0 && (
           <p className="p-4 text-gh-muted text-sm">No pages yet.</p>
         )}

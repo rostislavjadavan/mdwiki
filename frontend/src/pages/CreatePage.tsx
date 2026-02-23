@@ -25,12 +25,12 @@ export function CreatePage() {
   return (
     <Layout>
       <div className="border border-gh-border rounded-lg overflow-hidden max-w-lg">
-        <div className="px-4 py-3 bg-[#f6f8fa] border-b border-gh-border">
+        <div className="px-4 py-3 bg-gh-subtle border-b border-gh-border">
           <h1 className="font-semibold">Create new page</h1>
         </div>
         <form onSubmit={handleCreate} className="p-6 space-y-4">
           {error && (
-            <div className="border border-red-300 bg-red-50 rounded p-3 text-red-700 text-sm">{error}</div>
+            <div className="border rounded p-3 text-sm" style={{ borderColor: 'var(--gh-error-border)', background: 'var(--gh-error-bg)', color: 'var(--gh-error-text)' }}>{error}</div>
           )}
           <div>
             <label className="block text-sm font-medium text-gh-text mb-1">
@@ -41,7 +41,7 @@ export function CreatePage() {
               value={filename}
               onChange={e => setFilename(e.target.value)}
               placeholder="my-page.md"
-              className="w-full border border-gh-border rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+              className="w-full border border-gh-border rounded px-3 py-2 text-sm bg-gh-bg text-gh-text focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
               required
             />
           </div>
