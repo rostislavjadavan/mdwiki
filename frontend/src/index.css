@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: #1f2328;
+  background: #ffffff;
+}
+
+.markdown-content h1 { font-size: 2em; font-weight: 600; border-bottom: 1px solid #d0d7de; padding-bottom: 0.3em; margin: 1em 0 0.5em; }
+.markdown-content h2 { font-size: 1.5em; font-weight: 600; border-bottom: 1px solid #d0d7de; padding-bottom: 0.3em; margin: 1em 0 0.5em; }
+.markdown-content h3 { font-size: 1.25em; font-weight: 600; margin: 1em 0 0.5em; }
+.markdown-content p { margin: 0.5em 0 1em; line-height: 1.7; }
+.markdown-content a { color: #0969da; }
+.markdown-content code { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 4px; padding: 0.1em 0.4em; font-size: 0.9em; }
+.markdown-content pre { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 1em; overflow-x: auto; }
+.markdown-content pre code { background: none; border: none; padding: 0; }
+.markdown-content ul { padding-left: 2em; margin: 0.5em 0 1em; list-style: disc; }
+.markdown-content ol { padding-left: 2em; margin: 0.5em 0 1em; list-style: decimal; }
+.markdown-content blockquote { border-left: 4px solid #d0d7de; padding-left: 1em; color: #656d76; margin: 0.5em 0; }
+.markdown-content table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+.markdown-content th, .markdown-content td { border: 1px solid #d0d7de; padding: 0.5em 1em; }
+.markdown-content th { background: #f6f8fa; }
+
+b.highlight { background: #fff8c5; }
