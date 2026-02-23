@@ -56,6 +56,7 @@ body {
 }
 
 .markdown-content h1 { font-size: 2em; font-weight: 600; border-bottom: 1px solid var(--gh-border); padding-bottom: 0.3em; margin: 1em 0 0.5em; }
+.markdown-content > :first-child { margin-top: 0; }
 .markdown-content h2 { font-size: 1.5em; font-weight: 600; border-bottom: 1px solid var(--gh-border); padding-bottom: 0.3em; margin: 1em 0 0.5em; }
 .markdown-content h3 { font-size: 1.25em; font-weight: 600; margin: 1em 0 0.5em; }
 .markdown-content p { margin: 0.5em 0 1em; line-height: 1.7; }

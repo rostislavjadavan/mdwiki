@@ -1,27 +1,17 @@
 # Welcome to the Homelab Wiki
 
-This wiki contains documentation for our home lab infrastructure — network setup, virtualization, containers, backups, and DNS.
+This wiki contains documentation for our home lab infrastructure.
 
 ## Pages
 
 - [Proxmox Setup](proxmox_setup.md) — hypervisor installation and configuration
 - [Docker Compose](docker_compose.md) — useful container stacks
 - [Networking](networking.md) — VLANs, firewall, and network topology
-- [Backup Strategy](backup_strategy.md) — the 3-2-1 backup plan
-- [DNS Setup](dns_setup.md) — Pi-hole and local DNS records
 
 ## Server Inventory
 
 | Name       | IP Address     | Role                  |
 |------------|----------------|-----------------------|
 | pve-01     | 192.168.1.10   | Proxmox hypervisor    |
-| docker-01  | 192.168.1.20   | Docker host           |
 | nas-01     | 192.168.1.30   | TrueNAS storage       |
-| pihole     | 192.168.1.2    | DNS server            |
 | gw-01      | 192.168.1.1    | OPNsense firewall     |
-
-## Quick Links
-
-- Proxmox web UI: `https://192.168.1.10:8006`
-- Grafana dashboard: `https://192.168.1.20:3000`
-- Pi-hole admin: `http://192.168.1.2/admin`
