@@ -1,4 +1,4 @@
-![](logo/mdwiki_logo.png)
+![](logo/mdwiki_logo_small.png)
 
 # mdwiki
 
