@@ -4,6 +4,12 @@
 
 Simple, self-contained markdown wiki written in Go. Single binary, no database, no user accounts.
 
+## Why?
+
+I built mdwiki to document my homelab while learning Linux, server, and network administration. I wanted something really simple and barebone - just markdown files on disk, no databases, no auth. Most wikis out there were way too heavy for what I needed.
+
+It also doubled as a fun side project to work with Go and React, two technologies I enjoy. And honestly, building the wiki was a great form of procrastination.
+
 ## Features
 
 - Single binary deployment (frontend embedded in Go binary)
