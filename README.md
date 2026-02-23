@@ -1,66 +1,80 @@
-![](logo/mdwiki_logo.png)
+![](logo/mdwiki_logo_small.png)
 
 # mdwiki
 
-## Golang Markdown Wiki
+Simple, self-contained markdown wiki written in Go. Single binary, no database, no user accounts.
 
-- super simple 😊
-- one binary + config file
-- no user accounts
-- pages are stored as plain markdown files
-- page versioning 
-- github theme (thanks to https://github.com/sindresorhus/github-markdown-css)
-- Echo used as underlying http framework (https://echo.labstack.com/)  
-- using golang 1.16 (because of embed feature)
-- inspired by go-bwiki
+## Features
 
-## Screenshots
+- Single binary deployment (frontend embedded in Go binary)
+- Pages stored as plain markdown files
+- Page versioning (every save creates a new version)
+- Trash with restore support
+- Fuzzy search (instant results in navbar dropdown as you type)
+- React SPA frontend with Tailwind CSS
 
-#### Homepage
-![](screenshots/homepage.png)
+## Tech Stack
 
-#### Editor
-![](screenshots/edit_page.png)
+- **Backend:** Go, [Echo](https://echo.labstack.com/) framework, `embed` for static assets
+- **Frontend:** React, TypeScript, Vite, Tailwind CSS
+- **Storage:** Plain markdown files on disk
 
-#### Page versions
-Every update will create new version of the page. 
+## How to Build
 
-![](screenshots/page_versions.png)
-
-You can then view and restore any version you want.
-
-![](screenshots/page_version.png)
-
-#### Delete page
-Deleted pages are moved to the trash. You can view them or restore them if you need.
-
-![](screenshots/page_in_trash.png)
-
-_screenshots made using:_ https://www.screely.com
-
-## How to build
+Requires Go 1.16+ and Node.js.
 
 ```
-go build .
+make
+```
+
+This will install frontend dependencies, build the React SPA, and compile the Go binary with the frontend embedded.
+
+## Development
+
+```
+make dev
+```
+
+This starts both the Vite dev server (with hot reload) and the Go backend (with [air](https://github.com/air-verse/air) for hot reload). Air is installed automatically if not present.
+
+Open the **Vite dev server** address (default `http://localhost:5173`) in your browser. API requests are proxied to the Go backend automatically.
+
+## Production
+
+```
+make
+./mdwiki
+```
+
+The built binary serves everything — open the **Go backend** address (default `http://localhost:8080`, configured in `config.yml`).
+
+Other targets:
+
+```
+make clean          # Remove build artifacts
+make test           # Run Go tests
+make dev-frontend   # Run Vite dev server only
+make dev-backend    # Run Go server with air only
 ```
 
 ## Configuration
-Application loads `config.yml` on start up.
 
-```
+Application loads `config.yml` on startup.
+
+```yaml
 host: localhost
 port: 8080
 storage: .storage
 ```
 
-- `host` & `port` - web server configuration
-- `storage` is directory where pages going to be stored
+- `host` & `port` - web server bind address
+- `storage` - directory where pages are stored
 
-## Running as `systemd` service
+## Running as `systemd` Service
 
 ### Service file example
 
-```
+```ini
 [Unit]
 Description=mdwiki
 After=network.target
@@ -76,20 +90,17 @@ ExecStart=/opt/mdwiki
 WantedBy=multi-user.target
 ```
 
-- update `ExecStart` and `WorkingDirectory` based on installation path
-- working directory needs to be set because `mdwiki`
-  expects `config.yml` to be in the same directory as executable
-- place file in `/etc/systemd/system/mdwiki.service`
+- Update `ExecStart` and `WorkingDirectory` based on installation path
+- Working directory must contain `config.yml`
+- Place the file in `/etc/systemd/system/mdwiki.service`
 
-### Running service
+### Running the service
 
-- start service: `systemctl start mdwiki`
-- stop service: `systemctl stop mdwiki`
-- service status: `systemctl status mdwiki`
-- enable service: `systemctl enable mdwiki` (`enable` will hook the specified unit into relevant places, so that it will automatically start on boot)
-  
+- Start: `systemctl start mdwiki`
+- Stop: `systemctl stop mdwiki`
+- Status: `systemctl status mdwiki`
+- Enable on boot: `systemctl enable mdwiki`
 
 ## Logo
 
 Made using https://excalidraw.com
-
