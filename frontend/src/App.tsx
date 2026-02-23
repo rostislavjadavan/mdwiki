@@ -3,7 +3,6 @@ import { PageView } from './pages/PageView'
 import { EditPage } from './pages/EditPage'
 import { CreatePage } from './pages/CreatePage'
 import { ListPages } from './pages/ListPages'
-import { SearchPage } from './pages/SearchPage'
 import { TrashList } from './pages/TrashList'
 import { TrashPageView } from './pages/TrashPageView'
 import { VersionsList } from './pages/VersionsList'
@@ -28,7 +27,6 @@ export default function App() {
         <Route path="/" element={<PageView />} />
         <Route path="/list" element={<ListPages />} />
         <Route path="/create" element={<CreatePage />} />
-        <Route path="/search" element={<SearchPage />} />
         <Route path="/trash" element={<TrashList />} />
         <Route path="/trash/:page" element={<TrashPageView />} />
         <Route path="/edit/:page" element={<EditPage />} />

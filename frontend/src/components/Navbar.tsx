@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { api, type SearchResult } from '../api'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -31,16 +32,145 @@ function ThemeIcon({ theme }: { theme: Theme }) {
   )
 }
 
+function SearchDropdown({ result, loading, query, onSelect }: {
+  result: SearchResult | null
+  loading: boolean
+  query: string
+  onSelect: () => void
+}) {
+  if (loading && !result) {
+    return (
+      <div className="absolute top-full mt-1 w-[400px] max-w-[calc(100vw-2rem)] bg-gh-bg border border-gh-border rounded-lg shadow-lg z-50 p-3">
+        <p className="text-gh-muted text-sm">Searching...</p>
+      </div>
+    )
+  }
+
+  if (!result) return null
+
+  const empty = result.filenames.length === 0 && result.pageContent.length === 0
+
+  return (
+    <div className="absolute top-full mt-1 w-[400px] max-w-[calc(100vw-2rem)] bg-gh-bg border border-gh-border rounded-lg shadow-lg z-50 max-h-[70vh] overflow-y-auto">
+      {empty && (
+        <p className="text-gh-muted text-sm p-3">No results for &ldquo;{query}&rdquo;</p>
+      )}
+
+      {result.filenames.length > 0 && (
+        <div>
+          <div className="px-3 py-2 bg-gh-subtle border-b border-gh-border text-xs font-semibold text-gh-muted">
+            Filename matches
+          </div>
+          {result.filenames.map((r) => (
+            <Link
+              key={r.filename}
+              to={`/${r.filename}`}
+              onClick={onSelect}
+              className="block px-3 py-2 hover:bg-gh-subtle border-b border-gh-border last:border-b-0"
+            >
+              <span className="text-gh-link text-sm font-medium">{r.filename}</span>
+              {r.preview && (
+                <p className="text-xs text-gh-muted mt-0.5 truncate" dangerouslySetInnerHTML={{ __html: r.preview }} />
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {result.pageContent.length > 0 && (
+        <div>
+          <div className="px-3 py-2 bg-gh-subtle border-b border-gh-border text-xs font-semibold text-gh-muted">
+            Content matches
+          </div>
+          {result.pageContent.map((r) => (
+            <Link
+              key={r.filename}
+              to={`/${r.filename}`}
+              onClick={onSelect}
+              className="block px-3 py-2 hover:bg-gh-subtle border-b border-gh-border last:border-b-0"
+            >
+              <span className="text-gh-link text-sm font-medium">{r.filename}</span>
+              {r.preview && (
+                <p className="text-xs text-gh-muted mt-0.5 line-clamp-2" dangerouslySetInnerHTML={{ __html: r.preview }} />
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function Navbar({ theme, setTheme }: Props) {
   const [query, setQuery] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
-  const navigate = useNavigate()
+  const [result, setResult] = useState<SearchResult | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [showResults, setShowResults] = useState(false)
+  const abortRef = useRef<AbortController | null>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const location = useLocation()
 
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
-    if (query.trim()) {
-      navigate(`/search?query=${encodeURIComponent(query.trim())}`)
+  // Close dropdown on route change
+  useEffect(() => {
+    setShowResults(false)
+    setQuery('')
+    setResult(null)
+  }, [location.pathname])
+
+  // Debounced search
+  useEffect(() => {
+    if (!query.trim()) {
+      setResult(null)
+      setShowResults(false)
+      return
     }
+
+    setShowResults(true)
+    const timer = setTimeout(() => {
+      abortRef.current?.abort()
+      const controller = new AbortController()
+      abortRef.current = controller
+
+      setLoading(true)
+      api.search(query, controller.signal)
+        .then((r) => {
+          setResult(r)
+          setShowResults(true)
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError') console.error(err)
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setLoading(false)
+        })
+    }, 250)
+
+    return () => clearTimeout(timer)
+  }, [query])
+
+  // Close on click outside
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setShowResults(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Escape') {
+      setShowResults(false)
+    }
+  }
+
+  function handleSelect() {
+    setShowResults(false)
+    setQuery('')
+    setResult(null)
+    setMenuOpen(false)
   }
 
   function cycleTheme() {
@@ -56,15 +186,20 @@ export function Navbar({ theme, setTheme }: Props) {
           <img src="/logo.png" alt="mdwiki" width={91} height={30} />
         </Link>
 
-        <form onSubmit={handleSearch} className="flex-1 hidden sm:flex">
+        <div ref={wrapperRef} className="relative flex-1 hidden sm:flex">
           <input
             type="text"
             placeholder="Search..."
             value={query}
             onChange={e => setQuery(e.target.value)}
+            onFocus={() => { if (query.trim() && result) setShowResults(true) }}
+            onKeyDown={handleKeyDown}
             className="w-full max-w-xs px-3 py-1 rounded bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:bg-white/20"
           />
-        </form>
+          {showResults && (
+            <SearchDropdown result={result} loading={loading} query={query} onSelect={handleSelect} />
+          )}
+        </div>
 
         <nav className="hidden sm:flex items-center gap-4 text-sm text-white/80 shrink-0">
           <Link to="/list" className="hover:text-white">Pages</Link>
@@ -93,15 +228,19 @@ export function Navbar({ theme, setTheme }: Props) {
 
       {menuOpen && (
         <div className="sm:hidden bg-gh-header border-t border-white/10 px-4 pb-4 flex flex-col gap-3 text-sm text-white/80">
-          <form onSubmit={handleSearch} className="pt-3">
+          <div className="relative pt-3">
             <input
               type="text"
               placeholder="Search..."
               value={query}
               onChange={e => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full px-3 py-1 rounded bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none"
             />
-          </form>
+            {showResults && (
+              <SearchDropdown result={result} loading={loading} query={query} onSelect={handleSelect} />
+            )}
+          </div>
           <Link to="/list" onClick={() => setMenuOpen(false)} className="hover:text-white">Pages</Link>
           <Link to="/create" onClick={() => setMenuOpen(false)} className="hover:text-white">New Page</Link>
           <Link to="/trash" onClick={() => setMenuOpen(false)} className="hover:text-white">Trash</Link>

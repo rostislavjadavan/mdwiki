@@ -71,3 +71,7 @@ body {
 .markdown-content th { background: var(--gh-subtle); }
 
 b.highlight { background: var(--gh-highlight); }
+
+.dark * {
+  scrollbar-color: #30363d #0d1117;
+}

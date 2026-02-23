@@ -51,8 +51,8 @@ export const api = {
     }),
   deletePage: (filename: string) =>
     request<void>(`/api/pages/${filename}`, { method: 'DELETE' }),
-  search: (query: string) =>
-    request<SearchResult>(`/api/search?query=${encodeURIComponent(query)}`),
+  search: (query: string, signal?: AbortSignal) =>
+    request<SearchResult>(`/api/search?query=${encodeURIComponent(query)}`, { signal }),
   listTrash: () => request<PageInfo[]>('/api/trash'),
   getTrashPage: (filename: string) => request<Page>(`/api/trash/${filename}`),
   restoreTrash: (filename: string) =>

@@ -1,15 +1,17 @@
 package search
 
 import (
-	"github.com/rostislavjadavan/mdwiki/src/storage"
-	"github.com/writeas/go-strip-markdown"
-	"golang.org/x/text/runes"
-	"golang.org/x/text/transform"
-	"golang.org/x/text/unicode/norm"
 	"sort"
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/rostislavjadavan/mdwiki/src/storage"
+	"github.com/sahilm/fuzzy"
+	stripmd "github.com/writeas/go-strip-markdown"
+	"golang.org/x/text/runes"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 type Result struct {
@@ -24,6 +26,8 @@ type searchResult struct {
 	Score    int       `json:"score"`
 	Preview  string    `json:"preview"`
 }
+
+const maxPreviewLines = 3
 
 func Search(query string, s *storage.Storage) (*Result, error) {
 	result := Result{
@@ -42,27 +46,48 @@ func Search(query string, s *storage.Storage) (*Result, error) {
 		return &result, nil
 	}
 
-	queries := extractQueries(query)
-	if len(queries) == 0 {
-		return &result, nil
+	normalizedQuery := normalizeString(query)
+
+	// Filename matching
+	filenames := make([]string, len(pages))
+	for i, p := range pages {
+		filenames[i] = normalizeString(p.Filename)
 	}
 
-	for _, page := range pages {
-		// Search in filename
-		found, score, preview := searchInLine(page.Filename, queries)
-		if found {
-			result.Filenames = append(result.Filenames, searchResult{
-				Filename: page.Filename,
-				ModTime:  page.ModTime,
-				Score:    score,
-				Preview:  preview,
-			})
-		}
+	matches := fuzzy.Find(normalizedQuery, filenames)
+	for _, m := range matches {
+		page := pages[m.Index]
+		preview := highlightFromPositions(page.Filename, m.MatchedIndexes)
+		result.Filenames = append(result.Filenames, searchResult{
+			Filename: page.Filename,
+			ModTime:  page.ModTime,
+			Score:    m.Score,
+			Preview:  preview,
+		})
+	}
 
-		// Search in content
+	// Content matching
+	for _, page := range pages {
 		markdownContent, _ := s.PageRawContent(page.Filename)
 		content := stripmd.Strip(markdownContent)
 		lines := strings.Split(content, "\n")
+
+		normalizedLines := make([]string, 0, len(lines))
+		originalLines := make([]string, 0, len(lines))
+		for _, line := range lines {
+			trimmed := strings.TrimSpace(line)
+			if trimmed == "" {
+				continue
+			}
+			normalizedLines = append(normalizedLines, normalizeString(trimmed))
+			originalLines = append(originalLines, trimmed)
+		}
+
+		lineMatches := fuzzy.Find(normalizedQuery, normalizedLines)
+
+		if len(lineMatches) == 0 {
+			continue
+		}
 
 		r := searchResult{
 			Filename: page.Filename,
@@ -71,17 +96,21 @@ func Search(query string, s *storage.Storage) (*Result, error) {
 			Preview:  "",
 		}
 
-		for _, line := range lines {
-			found, score, preview := searchInLine(line, queries)
-			if found {
-				r.Score += score
-				r.Preview += "\n" + preview
+		count := 0
+		for _, lm := range lineMatches {
+			if count >= maxPreviewLines {
+				break
 			}
+			r.Score += lm.Score
+			preview := highlightFromPositions(originalLines[lm.Index], lm.MatchedIndexes)
+			if r.Preview != "" {
+				r.Preview += "\n"
+			}
+			r.Preview += preview
+			count++
 		}
 
-		if r.Score > 0 {
-			result.PageContent = append(result.PageContent, r)
-		}
+		result.PageContent = append(result.PageContent, r)
 	}
 
 	sort.Slice(result.PageContent, func(i, j int) bool {
@@ -95,41 +124,41 @@ func Search(query string, s *storage.Storage) (*Result, error) {
 	return &result, nil
 }
 
-func searchInLine(line string, queries []string) (bool, int, string) {
-	score := 0
-	preview := line
-	words := strings.Fields(line)
+func normalizeString(s string) string {
 	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+	result, _, _ := transform.String(t, strings.ToLower(s))
+	return result
+}
 
-	for _, query := range queries {
-		for _, word := range words {
-			tq, _, _ := transform.String(t, strings.ToLower(query))
-			tw, _, _ := transform.String(t, strings.ToLower(word))
+func highlightFromPositions(s string, positions []int) string {
+	if len(positions) == 0 {
+		return s
+	}
 
-			index := strings.Index(tw, tq)
-			if index != -1 {
-				score += 1
-				preview = highlight(preview, word, index, query)
+	posSet := make(map[int]bool, len(positions))
+	for _, p := range positions {
+		posSet[p] = true
+	}
+
+	var b strings.Builder
+	inHighlight := false
+	for i, ch := range []rune(s) {
+		if posSet[i] {
+			if !inHighlight {
+				b.WriteString(`<b class="highlight">`)
+				inHighlight = true
 			}
+			b.WriteRune(ch)
+		} else {
+			if inHighlight {
+				b.WriteString("</b>")
+				inHighlight = false
+			}
+			b.WriteRune(ch)
 		}
 	}
-
-	if score > 0 {
-		return true, score, preview
+	if inHighlight {
+		b.WriteString("</b>")
 	}
-	return false, score, ""
-}
-
-func extractQueries(query string) []string {
-	out := make([]string, 0)
-	for _, q := range strings.Fields(query) {
-		out = append(out, strings.TrimSpace(q))
-	}
-	return out
-}
-
-// highlight 'word' in 'src' starting from 'index' to length of the 'query'
-func highlight(src string, word string, index int, query string) string {
-	r := word[:index] + "<b class=\"highlight\">" + word[index:index+len(query)] + "</b>" + word[index+len(query):]
-	return strings.Replace(src, word, r, 1)
+	return b.String()
 }

@@ -10,7 +10,7 @@ Simple, self-contained markdown wiki written in Go. Single binary, no database, 
 - Pages stored as plain markdown files
 - Page versioning (every save creates a new version)
 - Trash with restore support
-- Full-text search
+- Fuzzy search (instant results in navbar dropdown as you type)
 - React SPA frontend with Tailwind CSS
 
 ## Tech Stack
