@@ -28,7 +28,7 @@ dev: air frontend/node_modules
 	@mkdir -p frontend/dist
 	@echo "Starting Go backend (air) and Vite dev server..."
 	@trap 'kill 0' EXIT; \
-		air & \
+		VITE_DEV_URL=http://localhost:5173 air & \
 		echo "Waiting for backend on :8080..."; \
 		while ! nc -z localhost 8080 2>/dev/null; do sleep 1; done; \
 		echo "Backend ready, starting Vite..."; \

@@ -3,6 +3,8 @@ package handlers
 import (
 	"io/fs"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 
 	"github.com/labstack/echo/v4"
 	mdwikifrontend "github.com/rostislavjadavan/mdwiki/frontend"
@@ -34,5 +36,21 @@ func SPAHandler(e *echo.Echo) func(c echo.Context) error {
 			return echo.ErrNotFound
 		}
 		return c.HTMLBlob(http.StatusOK, content)
+	}
+}
+
+func ViteDevProxyHandler(viteURL string) func(c echo.Context) error {
+	target, err := url.Parse(viteURL)
+	if err != nil {
+		panic(err)
+	}
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	return func(c echo.Context) error {
+		req := c.Request()
+		req.URL.Host = target.Host
+		req.URL.Scheme = target.Scheme
+		req.Host = target.Host
+		proxy.ServeHTTP(c.Response(), req)
+		return nil
 	}
 }
