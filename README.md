@@ -4,6 +4,12 @@
 
 Simple, self-contained markdown wiki written in Go. Single binary, no database, no user accounts.
 
+## Screenshots
+
+| Light mode | Dark mode |
+|---|---|
+| ![Light mode](screenshots/light_mode.png) | ![Dark mode](screenshots/dark_mode.png) |
+
 ## Why?
 
 I built mdwiki to document my homelab while learning Linux, server, and network administration. I wanted something really simple and barebone - just markdown files on disk, no databases, no auth. Most wikis out there were way too heavy for what I needed.
