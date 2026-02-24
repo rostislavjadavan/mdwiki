@@ -6,8 +6,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   base: mode === 'production' ? '/static/app/' : '/',
   server: {
-    proxy: {
-      '/api': 'http://localhost:8080',
-    },
+    port: 5173,
+    strictPort: true,
   },
 }))

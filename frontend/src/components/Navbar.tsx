@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { api, type SearchResult } from '../api'
+import logoUrl from '../assets/logo.png'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -183,7 +184,7 @@ export function Navbar({ theme, setTheme }: Props) {
     <header className="bg-gh-header text-white sticky top-0 z-50">
       <div className="max-w-[1012px] mx-auto px-4 flex items-center gap-4 h-14">
         <Link to="/" className="shrink-0">
-          <img src="/logo.png" alt="mdwiki" width={91} height={30} />
+          <img src={logoUrl} alt="mdwiki" width={91} height={30} />
         </Link>
 
         <div ref={wrapperRef} className="relative flex-1 hidden sm:flex">

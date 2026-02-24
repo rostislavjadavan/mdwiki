@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/rostislavjadavan/mdwiki/src/api"
@@ -40,8 +42,14 @@ func main() {
 	e.GET("/api/settings", api.RestSettingsHandler(cfg))
 
 	// SPA static assets and catch-all
-	e.GET("/static/app/*", handlers.SPAStaticHandler(e))
-	e.Any("/*", handlers.SPAHandler(e))
+	if viteURL := os.Getenv("VITE_DEV_URL"); viteURL != "" {
+		e.Logger.Infof("Dev mode: proxying frontend to %s", viteURL)
+		viteProxy := handlers.ViteDevProxyHandler(viteURL)
+		e.Any("/*", viteProxy)
+	} else {
+		e.GET("/static/app/*", handlers.SPAStaticHandler(e))
+		e.Any("/*", handlers.SPAHandler(e))
+	}
 
 	e.Logger.Fatal(e.Start(cfg.Host + ":" + cfg.Port))
 }
