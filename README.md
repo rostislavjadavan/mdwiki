@@ -8,7 +8,7 @@ Simple, self-contained markdown wiki written in Go. Single binary, no database, 
 
 | Light mode | Dark mode |
 |---|---|
-| ![Light mode](https://github.com/user-attachments/assets/98602489-5b61-4415-8f82-f919b3f4e28c) | ![Dark mode](https://github.com/user-attachments/assets/1e037d85-f0c3-49fa-97a2-bc08a394ec69) |
+| ![Light mode](screenshots/light_mode.png) | ![Dark mode](screenshots/dark_mode.png) |
 
 ## Why?
 
