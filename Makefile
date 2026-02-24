@@ -29,7 +29,10 @@ dev: air frontend/node_modules
 	@echo "Starting Go backend (air) and Vite dev server..."
 	@trap 'kill 0' EXIT; \
 		air & \
-		sleep 2 && cd frontend && npm run dev & \
+		echo "Waiting for backend on :8080..."; \
+		while ! nc -z localhost 8080 2>/dev/null; do sleep 1; done; \
+		echo "Backend ready, starting Vite..."; \
+		cd frontend && npm run dev & \
 		wait
 
 # Run frontend dev server (with hot reload)
