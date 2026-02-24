@@ -2,6 +2,19 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api, type Page } from '../api'
 import { Layout } from '../components/Layout'
+import CodeMirror from '@uiw/react-codemirror'
+import { githubLight, githubDark } from '@uiw/codemirror-theme-github'
+import { markdown } from '@codemirror/lang-markdown'
+
+function useDarkMode() {
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'))
+  useEffect(() => {
+    const obs = new MutationObserver(() => setIsDark(document.documentElement.classList.contains('dark')))
+    obs.observe(document.documentElement, { attributeFilter: ['class'] })
+    return () => obs.disconnect()
+  }, [])
+  return isDark
+}
 
 export function EditPage() {
   const { page } = useParams<{ page: string }>()
@@ -12,6 +25,7 @@ export function EditPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
+  const isDark = useDarkMode()
 
   useEffect(() => {
     api.getPage(filename)
@@ -61,12 +75,16 @@ export function EditPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gh-text mb-1">Content (Markdown)</label>
-            <textarea
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              rows={20}
-              className="w-full border border-gh-border rounded px-3 py-2 text-sm font-mono bg-gh-bg text-gh-text focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 resize-y"
-            />
+            <div className="border border-gh-border rounded overflow-hidden focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-400">
+              <CodeMirror
+                value={content}
+                onChange={setContent}
+                extensions={[markdown()]}
+                theme={isDark ? githubDark : githubLight}
+                basicSetup={{ lineNumbers: false, foldGutter: false }}
+                className="text-sm"
+              />
+            </div>
           </div>
           <div className="flex gap-3">
             <button
