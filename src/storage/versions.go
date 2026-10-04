@@ -41,6 +41,7 @@ func (s *Storage) VersionsList(filename string) ([]PageInfo, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer dir.Close()
 
 	files, err := dir.Readdir(0)
 	if err != nil {
@@ -49,7 +50,7 @@ func (s *Storage) VersionsList(filename string) ([]PageInfo, error) {
 
 	list := make([]PageInfo, 0)
 	for _, file := range files {
-		if !file.IsDir() && ValidateFilename(file.Name()) == nil && strings.Index(file.Name(), filename) != -1 {
+		if !file.IsDir() && ValidateFilename(file.Name()) == nil && strings.HasPrefix(file.Name(), filename+"__") {
 			_, version := parsePageFilename(file.Name())
 			list = append(list, PageInfo{
 				Filename: file.Name(),
@@ -79,6 +80,5 @@ func (s *Storage) VersionRestore(page *Page) error {
 	if err != nil {
 		return err
 	}
-	s.PageContentUpdate(page.RawContent, currentPage)
-	return nil
+	return s.PageContentUpdate(page.RawContent, currentPage)
 }

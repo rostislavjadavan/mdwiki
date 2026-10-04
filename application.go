@@ -2,12 +2,15 @@ package main
 
 import (
 	"os"
+	"strings"
+	"sync"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/rostislavjadavan/mdwiki/src/api"
 	"github.com/rostislavjadavan/mdwiki/src/config"
 	"github.com/rostislavjadavan/mdwiki/src/handlers"
+	wikimcp "github.com/rostislavjadavan/mdwiki/src/mcp"
 	"github.com/rostislavjadavan/mdwiki/src/storage"
 )
 
@@ -24,6 +27,18 @@ func main() {
 
 	e := echo.New()
 	e.Logger.SetLevel(log.DEBUG)
+	// REST and MCP share storage and the Markdown renderer.
+	var storageMu sync.Mutex
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			if strings.HasPrefix(c.Request().URL.Path, "/api/") {
+				storageMu.Lock()
+				defer storageMu.Unlock()
+			}
+			return next(c)
+		}
+	})
+	e.Any("/mcp", echo.WrapHandler(wikimcp.NewHandler(s, &storageMu, cfg.MCPToken)))
 
 	// REST API
 	e.GET("/api/pages", api.RestPageListHandler(e, s))
