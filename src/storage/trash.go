@@ -20,6 +20,7 @@ func (s *Storage) TrashList() ([]PageInfo, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer dir.Close()
 
 	files, err := dir.Readdir(0)
 	if err != nil {
